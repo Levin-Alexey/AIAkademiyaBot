@@ -10,6 +10,15 @@ from aiogram.filters import Command
 from aiogram.enums import ParseMode
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from dotenv import load_dotenv
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import selectinload
+from datetime import datetime
+
+from database import async_session
+from models import User, Webinar
+from handlers import personal_direction, business_direction, registration, admin, additional_actions
+from keyboards import _get_additional_buttons
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -30,11 +39,62 @@ if not BOT_TOKEN:
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
+# Подключение роутеров
+dp.include_router(admin.router)
+dp.include_router(personal_direction.router)
+dp.include_router(business_direction.router)
+dp.include_router(registration.router)
+dp.include_router(additional_actions.router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    """Приветственное сообщение при старте бота"""
+    """
+    Приветственное сообщение при старте бота.
+    Проверяет, записан ли пользователь на вебинар.
+    """
+    async with async_session() as session:
+        # 1. Проверяем, есть ли у пользователя регистрация на будущий вебинар
+        stmt = select(Webinar).join(User.webinars).where(
+            User.telegram_id == message.from_user.id,
+            Webinar.webinar_date > datetime.now()
+        ).order_by(Webinar.webinar_date.asc()).limit(1)
+        
+        result = await session.execute(stmt)
+        upcoming_registration = result.scalar_one_or_none()
+
+        # 2. Если регистрация найдена, показываем специальное сообщение
+        if upcoming_registration:
+            inline_keyboard = []
+            if upcoming_registration.webinar_link:
+                inline_keyboard.append([
+                    InlineKeyboardButton(
+                        text="Ссылка на вебинар",
+                        url=upcoming_registration.webinar_link,
+                    )
+                ])
+            
+            # Добавляем дополнительные кнопки
+            inline_keyboard.extend(_get_additional_buttons())
+
+            keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+            await message.answer(
+                f"Вы записаны на вебинар {upcoming_registration.webinar_date.strftime('%d.%m.%Y в %H:%M')}",
+                reply_markup=keyboard
+            )
+            return
+
+    # 3. Если регистрация не найдена, запускаем стандартный флоу
+    # Сначала убедимся, что пользователь существует в базе
+    async with async_session() as session:
+        insert_stmt = insert(User).values(
+            telegram_id=message.from_user.id,
+            user_name=message.from_user.username
+        ).on_conflict_do_nothing(index_elements=['telegram_id'])
+        await session.execute(insert_stmt)
+        await session.commit()
+
+    # Показываем стандартное приветствие
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -53,20 +113,26 @@ async def cmd_start(message: Message):
     )
 
     caption = (
-        "👋 Привет!\n\n"
-        "Через минуту ты зарегистрируешься на вебинар, который сделает ИИ "
-        "твоим <b>ежедневным помощником</b> в делах, жизни и бизнесе.\n\n"
-        "🔥 <b>За 1 час на вебинаре ты узнаешь:</b>\n\n"
-        "✅ Как ИИ может помогать каждый день - поможет составлять письма,\n"
-        "планы, идеи, решения\n"
-        "✅ ТОП бесплатных нейросетей мощнее ChatGPT Plus и Midjourney\n"
-        "✅ Превращаем часы рутины в 15 минут работы. Время для роста, а не\n"
-        "задач!\n\n"
-        "💡 Фишки профим и секреты, о которых молчат\n\n"
-        "🎁 <b>Подарок всем участникам:</b> база ТОП ИИ + секретные фишки\n"
-        "использования\n\n"
-        "⚡ <b>ИИ не заменяет тебя. Он умножает твои возможности!</b>\n\n"
-        "Теперь выбери своё направление:"
+        "🎉 Отлично! Ты почти на вебинаре!\n"
+        "Через пару минут ты зарегистрируешься и получишь доступ к знаниям, "
+        "которые изменят твой подход к работе.\n\n"
+        "🔥 <b>Программа вебинара (60 минут):</b>\n\n"
+        "<b>Блок 1: ИИ каждый день (20 мин)</b>\n"
+        "✅ Как использовать ИИ для писем, планов, идей, отчетов\n"
+        "✅ Превращаем ИИ из эксперимента в привычку\n"
+        "✅ Конкретные сценарии применения\n\n"
+        "<b>Блок 2: Бесплатные инструменты (20 мин)</b>\n"
+        "✅ ТОП нейросетей мощнее ChatGPT Plus и Midjourney\n"
+        "✅ Где найти и как применять\n"
+        "✅ Сравнение с платными аналогами\n\n"
+        "<b>Блок 3: Автоматизация (20 мин)</b>\n"
+        "✅ Как 3 часа рутины превращаются в 15 минут\n"
+        "✅ Готовые схемы автоматизации\n"
+        "✅ Промпты для копирования\n\n"
+        "💡 <b>Бонус:</b> Секреты, которыми пользуются профи\n"
+        "🎁 <b>Подарок всем:</b> база из ТОП бесплатных ИИ + промпты + сценарии\n\n"
+        "⚡ <b>ИИ умножает твои возможности!</b>\n\n"
+        "<b>Выбери своё направление:</b>"
     )
 
     await message.answer_photo(
@@ -106,16 +172,6 @@ async def cmd_info(message: Message):
         "🔹 Фреймворк: aiogram 3.x\n"
         "🔹 Язык: Python\n\n"
         "Создан для образовательных целей 📖"
-    )
-
-
-# Обработчик всех текстовых сообщений
-@dp.message()
-async def echo_message(message: Message):
-    """Эхо-обработчик для всех остальных сообщений"""
-    await message.answer(
-        f"Ты написал: {message.text}\n\n"
-        "Используй /help чтобы узнать доступные команды."
     )
 
 
