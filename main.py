@@ -17,7 +17,7 @@ from datetime import datetime
 
 from database import async_session
 from models import User, Webinar
-from handlers import personal_direction, business_direction, registration, admin, additional_actions
+from handlers import personal_direction, business_direction, registration, admin, additional_actions, enroll_course
 from keyboards import _get_additional_buttons
 
 # Загрузка переменных окружения
@@ -45,6 +45,7 @@ dp.include_router(personal_direction.router)
 dp.include_router(business_direction.router)
 dp.include_router(registration.router)
 dp.include_router(additional_actions.router)
+dp.include_router(enroll_course.router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -66,21 +67,53 @@ async def cmd_start(message: Message):
         # 2. Если регистрация найдена, показываем специальное сообщение
         if upcoming_registration:
             inline_keyboard = []
-            if upcoming_registration.webinar_link:
-                inline_keyboard.append([
-                    InlineKeyboardButton(
-                        text="Ссылка на вебинар",
-                        url=upcoming_registration.webinar_link,
-                    )
-                ])
+            # if upcoming_registration.webinar_link:
+            #     inline_keyboard.append([
+            #         InlineKeyboardButton(
+            #             text="Ссылка на вебинар",
+            #             url=upcoming_registration.webinar_link,
+            #         )
+            #     ])
             
             # Добавляем дополнительные кнопки
             inline_keyboard.extend(_get_additional_buttons())
 
             keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+            
+            # Отправляем изображение
+            image_url = (
+                "https://image2url.com/images/1763063078779-"
+                "f4fbaecb-7fe2-4524-99d5-e65417d77473.jpeg"
+            )
+            await message.answer_photo(image_url)
+
+            # Форматируем дату и время из базы данных
+            webinar_date = upcoming_registration.webinar_date.strftime(
+                '%d.%m.%Y'
+            )
+            webinar_time = upcoming_registration.webinar_date.strftime('%H:%M')
+            
+            text = f"""🎉 <b>Приветсвую тебя, {message.from_user.first_name}!</b>
+Отлично, что вернулся, скоро мы начинаем большое путешествие в мир ИИ! 
+
+<b>Ты зарегистрирован на вебинар: 📅 {webinar_date} в {webinar_time} МСК</b>
+
+✅ <b>Всё готово к старту:</b>
+
+🔗 Ссылку на вебинар пришлю <b>за 1 час</b> до начала
+
+📲 Напоминание придёт сюда, в чат
+
+🎁 Бонусные материалы придут в чат после вебинара
+
+💡 Будь с нами - всё будет приходить сюда!
+
+⚡ До встречи! Готовься к мощным знаниям! 🚀"""
+
             await message.answer(
-                f"Вы записаны на вебинар {upcoming_registration.webinar_date.strftime('%d.%m.%Y в %H:%M')}",
-                reply_markup=keyboard
+                text,
+                reply_markup=keyboard,
+                parse_mode="HTML"
             )
             return
 

@@ -2,6 +2,13 @@
 # Получите токен у @BotFather в Telegram
 BOT_TOKEN=your_bot_token_here
 
+# YooKassa Payment Settings
+PAYMENT_SHOP_ID=your_shop_id_here
+PAYMENT_SECRET_KEY=your_secret_key_here
+WEBHOOK_URL=https://your-domain.com/webhook
+# Дефолтный email для чеков (если у пользователя нет email/телефона)
+DEFAULT_CUSTOMER_EMAIL=your-default-email@example.com
+
 # Другие настройки
 # DEBUG=True
 

@@ -9,11 +9,6 @@ async def support_contact_handler(callback: CallbackQuery):
     await callback.answer("Вы выбрали 'Написать в поддержку'. Скоро здесь будет форма или контакт.", show_alert=True)
     # Здесь можно добавить логику для связи с поддержкой, например, ссылку на Telegram-аккаунт или форму.
 
-@router.callback_query(F.data == "enroll_course")
-async def enroll_course_handler(callback: CallbackQuery):
-    await callback.answer("Вы выбрали 'Записаться на полный курс по ИИ'. Скоро здесь будет информация о курсе.", show_alert=True)
-    # Здесь можно добавить логику для предоставления информации о курсе или ссылки на него.
-
 @router.callback_query(F.data == "private_channel")
 async def private_channel_handler(callback: CallbackQuery):
     # Эта кнопка должна быть с url, поэтому этот обработчик может не вызываться,
