@@ -15,6 +15,6 @@ def _get_additional_buttons():
         )],
         [InlineKeyboardButton(
             text="🔐 Наш закрытый канал",
-            url="https://t.me/your_private_channel_link"
-        )]  # Замените на реальную ссылку
+            url="https://t.me/+VxGcD_UbVJE5NTNi"
+        )]
     ]
