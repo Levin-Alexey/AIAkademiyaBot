@@ -7,7 +7,7 @@ def _get_additional_buttons():
     return [
         [InlineKeyboardButton(
             text="💬 Написать в поддержку",
-            callback_data="support_contact"
+            url="https://t.me/LevinMSK"
         )],
         [InlineKeyboardButton(
             text="🚀 Записаться на полный курс по ИИ",

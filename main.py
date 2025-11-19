@@ -74,6 +74,12 @@ async def cmd_start(message: Message):
                         url=upcoming_registration.webinar_link,
                     )
                 ])
+            inline_keyboard.append([
+                InlineKeyboardButton(
+                    text="🎁 Бонусные материалы",
+                    callback_data="bonus_materials"
+                )
+            ])
             
             # Добавляем дополнительные кнопки
             inline_keyboard.extend(_get_additional_buttons())

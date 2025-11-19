@@ -3,10 +3,6 @@ from aiogram.types import CallbackQuery
 
 router = Router()
 
-@router.callback_query(F.data == "support_contact")
-async def support_contact_handler(callback: CallbackQuery):
-    await callback.answer("Вы выбрали 'Написать в поддержку'. Скоро здесь будет форма или контакт.", show_alert=True)
-    # Здесь можно добавить логику для связи с поддержкой, например, ссылку на Telegram-аккаунт или форму.
 
 @router.callback_query(F.data == "private_channel")
 async def private_channel_handler(callback: CallbackQuery):
