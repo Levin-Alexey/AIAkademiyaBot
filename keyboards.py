@@ -13,8 +13,5 @@ def _get_additional_buttons():
             text="🚀 Записаться на полный курс по ИИ",
             callback_data="enroll_course"
         )],
-        [InlineKeyboardButton(
-            text="🔐 Наш закрытый канал",
-            url="https://t.me/+VxGcD_UbVJE5NTNi"
-        )]
+
     ]
