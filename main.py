@@ -18,6 +18,7 @@ from datetime import datetime
 from database import async_session
 from models import User, Webinar
 from handlers import personal_direction, business_direction, registration, admin, additional_actions, enroll_course
+from handlers import personal_direction, business_direction, registration, admin, additional_actions, enroll_course, speaker_info
 from keyboards import _get_additional_buttons
 
 # Загрузка переменных окружения
@@ -46,6 +47,7 @@ dp.include_router(business_direction.router)
 dp.include_router(registration.router)
 dp.include_router(additional_actions.router)
 dp.include_router(enroll_course.router)
+dp.include_router(speaker_info.router)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -84,6 +86,12 @@ async def cmd_start(message: Message):
             # Добавляем дополнительные кнопки
             inline_keyboard.extend(_get_additional_buttons())
 
+                            inline_keyboard.append([
+                                InlineKeyboardButton(
+                                    text="ℹ️ Информация о спикере",
+                                    callback_data="speaker_info"
+                                )
+                            ])
             keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
             
             # Отправляем изображение
