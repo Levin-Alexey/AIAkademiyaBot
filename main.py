@@ -86,12 +86,12 @@ async def cmd_start(message: Message):
             # Добавляем дополнительные кнопки
             inline_keyboard.extend(_get_additional_buttons())
 
-                            inline_keyboard.append([
-                                InlineKeyboardButton(
-                                    text="ℹ️ Информация о спикере",
-                                    callback_data="speaker_info"
-                                )
-                            ])
+            inline_keyboard.append([
+                InlineKeyboardButton(
+                    text="ℹ️ Информация о спикере",
+                    callback_data="speaker_info"
+                )
+            ])
             keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
             
             # Отправляем изображение
