@@ -107,9 +107,13 @@ async def enroll_course_handler(callback: CallbackQuery):
                 inline_keyboard=[
                     [
                         InlineKeyboardButton(
-                            text="🙋‍♂️ Получить консультацию или задать вопрос",
+                            text="💬 Получить консультацию и задать вопрос",
                             url="https://t.me/LevinMSK"
                         )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="💳 Получить доступ к курсу",
                             callback_data="purchase_course"
                         )
                     ]
