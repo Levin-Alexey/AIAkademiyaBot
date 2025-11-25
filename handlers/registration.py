@@ -100,9 +100,31 @@ async def confirm_registration_handler(callback: CallbackQuery):
         user.webinars.append(webinar)
         await session.commit()
 
-        # Формируем клавиатуру с дополнительными кнопками
-        additional_buttons = _get_additional_buttons()
-        keyboard = InlineKeyboardMarkup(inline_keyboard=additional_buttons)
+        inline_keyboard = []
+        if webinar.webinar_link: # Используем webinar.webinar_link, а не upcoming_registration.webinar_link
+            inline_keyboard.append([
+                InlineKeyboardButton(
+                    text="🎥 Ссылка на вебинар",
+                    url=webinar.webinar_link,
+                )
+            ])
+        inline_keyboard.append([
+            InlineKeyboardButton(
+                text="🔐 Закрытая группа по ИИ",
+                url="https://t.me/+VxGcD_UbVJE5NTNi"
+            )
+        ])
+        
+        # Добавляем дополнительные кнопки
+        inline_keyboard.extend(_get_additional_buttons())
+
+        inline_keyboard.append([
+            InlineKeyboardButton(
+                text="ℹ️ Информация о спикере",
+                callback_data="speaker_info"
+            )
+        ])
+        keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
         # Отправляем изображение
         image_url = (
