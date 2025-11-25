@@ -338,7 +338,7 @@ async def purchase_course_handler(callback: CallbackQuery):
                 inline_keyboard=[
                     [
                         InlineKeyboardButton(
-                            text="💳 Оплатить курс",
+                            text="💳 Получить доступ к курсу",
                             url=payment_url
                         )
                     ]
@@ -359,7 +359,7 @@ async def purchase_course_handler(callback: CallbackQuery):
                 f"- Записи всех вебинаров\n"
                 f"- Доступ в закрытую группу\n"
                 f"- Готовые шаблоны и промпты\n\n"
-                f"Закрепите свое место сейчас 👇",
+                f"Получитие доступ уже сейчас 👇",
                 reply_markup=keyboard,
                 parse_mode="HTML"
             )
