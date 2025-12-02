@@ -2,6 +2,7 @@
 import os
 import uuid
 import json
+import logging
 from datetime import datetime
 from aiogram import Router, F
 from aiogram.types import (
@@ -18,12 +19,15 @@ from database import async_session
 from models import User, Course, Payment, PaymentStatus, course_registrations
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 router = Router()
 
 # Настройка ЮКассы
 Configuration.account_id = os.getenv('PAYMENT_SHOP_ID')
 Configuration.secret_key = os.getenv('PAYMENT_SECRET_KEY')
+
+logger.info(f"YooKassa Configuration: account_id={Configuration.account_id}, secret_key={'***' if Configuration.secret_key else 'NOT SET'}")
 
 
 @router.callback_query(F.data == "enroll_course")
@@ -251,6 +255,7 @@ async def purchase_course_handler(callback: CallbackQuery):
 
             # 5. Создаем уникальный ID платежа для ЮКассы
             yookassa_payment_id = str(uuid.uuid4())
+            logger.info(f"Creating payment for user {telegram_id}, payment_id: {yookassa_payment_id}")
 
             # 6. Создаем платеж через API ЮКассы
             # Для receipt ОБЯЗАТЕЛЬНО нужен email или телефон покупателя
@@ -258,7 +263,7 @@ async def purchase_course_handler(callback: CallbackQuery):
             # Пробуем получить email или телефон (если доступны)
             user_email = getattr(callback.from_user, 'email', None)
             user_phone = getattr(callback.from_user, 'phone', None)
-            
+
             # ВСЕГДА заполняем customer_data
             if user_email:
                 customer_data["email"] = user_email
@@ -269,9 +274,11 @@ async def purchase_course_handler(callback: CallbackQuery):
                 default_email = os.getenv('DEFAULT_CUSTOMER_EMAIL', '')
                 if default_email:
                     customer_data["email"] = default_email
+                    logger.info(f"Using default customer email: {default_email}")
                 else:
                     # Создаем временный email на основе telegram_id
                     customer_data["email"] = f"user_{telegram_id}@telegram.local"
+                    logger.warning(f"No DEFAULT_CUSTOMER_EMAIL, using temporary: {customer_data['email']}")
             
             payment_data = {
                 "amount": {
@@ -308,8 +315,28 @@ async def purchase_course_handler(callback: CallbackQuery):
                     "course_name": course.course_name
                 }
             }
-            
-            yookassa_payment = YooKassaPayment.create(payment_data, yookassa_payment_id)
+
+            # Создаем платеж через API ЮКассы с обработкой ошибок
+            logger.info(f"Sending payment request to YooKassa: amount={course.price}, customer={customer_data}")
+            try:
+                yookassa_payment = YooKassaPayment.create(payment_data, yookassa_payment_id)
+                logger.info(f"Payment created successfully: {yookassa_payment.id}, status={yookassa_payment.status}")
+
+                # Проверяем, что платеж создан успешно
+                if not yookassa_payment or not hasattr(yookassa_payment, 'confirmation'):
+                    logger.error("Payment created but no confirmation object")
+                    raise ValueError("Платеж создан, но отсутствует объект подтверждения")
+
+                # Проверяем наличие ссылки на оплату
+                if not hasattr(yookassa_payment.confirmation, 'confirmation_url'):
+                    logger.error("Payment confirmation has no URL")
+                    raise ValueError("Отсутствует ссылка на оплату")
+
+                logger.info(f"Payment URL: {yookassa_payment.confirmation.confirmation_url}")
+
+            except Exception as api_error:
+                logger.error(f"YooKassa API Error: {type(api_error).__name__}: {api_error}", exc_info=True)
+                raise ValueError(f"Ошибка при создании платежа в YooKassa: {str(api_error)}")
 
             # 7. Сохраняем платеж в БД
             # Используем прямое SQL для правильного сохранения enum
