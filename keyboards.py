@@ -9,9 +9,9 @@ def _get_additional_buttons():
             text="💬 Написать в поддержку",
             url="https://t.me/LevinMSK"
         )],
-        [InlineKeyboardButton(
-            text="🚀 Записаться на полный курс по ИИ",
-            callback_data="enroll_course"
-        )],
+        # [InlineKeyboardButton(
+        #     text="🚀 Записаться на полный курс по ИИ",
+        #     callback_data="enroll_course"
+        # )],
 
     ]

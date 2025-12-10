@@ -4,11 +4,50 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="baae329e-92a4-4946-9962-840bdc24d356" name="Changes" comment="" />
+    <list default="true" id="baae329e-92a4-4946-9962-840bdc24d356" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI_COINS_REPORT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CHECKLIST.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/COINS_CHEATSHEET.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/COINS_SYSTEM.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CONCLUSIONS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EXAMPLES_COINS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FINAL_INDEX.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FINAL_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README_COINS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SETUP_COINS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coin_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/install_coins.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/create_ai_coins_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/AIAkademiyaBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AIAkademiyaBot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/business_direction.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/business_direction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/personal_direction.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/personal_direction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/registration.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/registration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/keyboards.py" beforeDir="false" afterPath="$PROJECT_DIR$/keyboards.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -27,21 +66,33 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Shell Script.install_coins.sh.executor": "Run",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/levin/Документы/dev/psymasterkit_bot",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/levin/Документы/dev/AIAkademiyaBot",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.customization.CustomizationConfigurable",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PY-252.28238.29" />
-        <option value="bundled-python-sdk-a101402ee41c-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28238.29" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-PY-253.28294.336" />
+        <option value="bundled-python-sdk-0978a7220b69-9867c7d4c0a4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.28294.336" />
       </set>
     </attachedChunks>
   </component>
@@ -54,6 +105,13 @@
       <updated>1764655853670</updated>
       <workItem from="1764655855045" duration="688000" />
       <workItem from="1764656723936" duration="2475000" />
+      <workItem from="1764663567436" duration="2093000" />
+      <workItem from="1764738884021" duration="17000" />
+      <workItem from="1764963807040" duration="1658000" />
+      <workItem from="1765043992131" duration="2005000" />
+      <workItem from="1765127878587" duration="2451000" />
+      <workItem from="1765215278981" duration="61000" />
+      <workItem from="1765385787972" duration="1312000" />
     </task>
     <servers />
   </component>

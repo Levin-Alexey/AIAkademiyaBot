@@ -18,6 +18,13 @@ class PaymentStatus(enum.Enum):
     FAILED = "failed"
 
 
+# Enum для типов операций с монетами
+class CoinOperationType(enum.Enum):
+    EARNED = "earned"  # Заработка
+    SPENT = "spent"    # Расход
+    REFUND = "refund"  # Возврат
+
+
 # Association Table for User and Webinar (many-to-many)
 webinar_registrations = Table('webinar_registrations', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
@@ -39,6 +46,7 @@ class User(Base):
     user_name = Column(String)
     start_time = Column(DateTime, default=func.now())
     direction = Column(String, nullable=True)
+    ai_coins_balance = Column(Integer, default=0, nullable=False)  # Баланс AI монет
 
     # Relationship to the Webinar model (бесплатные вебинары)
     webinars = relationship(
@@ -57,8 +65,11 @@ class User(Base):
     # Relationship to payments
     payments = relationship('Payment', back_populates='user')
 
+    # Relationship to AI Coins operations
+    coin_operations = relationship('AICoinOperation', back_populates='user')
+
     def __repr__(self):
-        return f"<User(telegram_id={self.telegram_id}, user_name='{self.user_name}')>"
+        return f"<User(telegram_id={self.telegram_id}, user_name='{self.user_name}', ai_coins={self.ai_coins_balance})>"
 
 class Webinar(Base):
     __tablename__ = 'webinars'
@@ -134,6 +145,32 @@ class Payment(Base):
         return (
             f"<Payment(id={self.id}, payment_id='{self.payment_id}', "
             f"status={self.status.value}, amount={self.amount})>"
+        )
+
+
+class AICoinOperation(Base):
+    """Модель для отслеживания начисления и расходования AI монет"""
+    __tablename__ = 'ai_coin_operations'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
+    amount = Column(Integer, nullable=False)  # Количество монет (положительное или отрицательное)
+    operation_type = Column(
+        Enum(CoinOperationType, name='coin_operation_type', create_type=False, native_enum=True),
+        nullable=False,
+        index=True
+    )
+    reason = Column(String, nullable=True)  # Причина операции (например: "регистрация", "прохождение вебинара" и т.д.)
+    description = Column(Text, nullable=True)  # Полное описание операции
+    created_at = Column(DateTime, default=func.now(), nullable=False, index=True)
+
+    # Relationships
+    user = relationship('User', back_populates='coin_operations')
+
+    def __repr__(self):
+        return (
+            f"<AICoinOperation(user_id={self.user_id}, amount={self.amount}, "
+            f"type={self.operation_type.value}, reason='{self.reason}')>"
         )
 
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/.idea/queries/Query_1.sql" value="e752f861-26a8-4019-ac23-8e6ff3aceba0" />
+    <file url="file://$PROJECT_DIR$/migrations/create_ai_coins_table.sql" value="e752f861-26a8-4019-ac23-8e6ff3aceba0" />
+  </component>
+</project>

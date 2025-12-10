@@ -3,11 +3,11 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
-from datetime import datetime
 
 from database import async_session
 from models import User, Webinar
-from keyboards import _get_additional_buttons # Импортируем функцию из keyboards
+from keyboards import _get_additional_buttons
+from coin_service import add_coins, get_balance
 
 router = Router()
 
@@ -32,35 +32,22 @@ async def show_next_webinar_handler(callback: CallbackQuery):
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="🔥Зарегистрироваться🔥",
+                        text="✨ ПОДТВЕРДИТЬ УЧАСТИЕ ✨",
                         callback_data=f"confirm_registration_{next_webinar.id}",
                     )
                 ]
             ]
         )
         await callback.message.answer(
-            f"""🎉 Почти готово!
+            f"""🏁 Финишная прямая!
 
-Ты в одном клике от доступа к знаниям, которые изменят твой подход к работе.
+🗓 Дата: {next_webinar.webinar_date.strftime('%d.%m.%Y')}
+⏰ Время: {next_webinar.webinar_date.strftime('%H:%M')} МСК
+📍 Место: Онлайн
 
-🔥 <b>Ближайший вебинар:</b>
-📅 {next_webinar.webinar_date.strftime('%d.%m.%Y')}
-⏰ {next_webinar.webinar_date.strftime('%H:%M')} по МСК
+⚠️ Важно: Чтобы забрать Базу нейросетей и активировать доступ к закрытой группе, нажми финальную кнопку регистрации.
 
-💡 Что получишь:
-
-→ Инструменты, которые работают
-→ Промпты, которые экономят часы
-→ Схемы, которые можно применить завтра
-
-⚡ Мест ограничено. Не упусти!
-
-<b>ЖМИ КНОПКУ НИЖЕ - ✨ЗАРЕГИСТРИРОВАТЬСЯ✨</b>
-
-После регистрации придёт:
-✅ Ссылка на вебинар
-✅ Напоминание за 1 час
-✅ Доступ в закрытую группу по ИИ
+За это действие я начислю еще +100 монет! 🪙
 """,
             reply_markup=keyboard,
             parse_mode="HTML"
@@ -100,14 +87,22 @@ async def confirm_registration_handler(callback: CallbackQuery):
         user.webinars.append(webinar)
         await session.commit()
 
+        # Начисляем +100 монет при подтверждении регистрации
+        await add_coins(
+            telegram_id=callback.from_user.id,
+            amount=100,
+            reason="подтверждение регистрации",
+            description="Бонус за подтверждение регистрации на вебинар"
+        )
+
         inline_keyboard = []
-        if webinar.webinar_link: # Используем webinar.webinar_link, а не upcoming_registration.webinar_link
-            inline_keyboard.append([
-                InlineKeyboardButton(
-                    text="🎥 Ссылка на вебинар",
-                    url=webinar.webinar_link,
-                )
-            ])
+        # if webinar.webinar_link: # Используем webinar.webinar_link, а не upcoming_registration.webinar_link
+        #     inline_keyboard.append([
+        #         InlineKeyboardButton(
+        #             text="🎥 Ссылка на вебинар",
+        #             url=webinar.webinar_link,
+        #         )
+        #     ])
         inline_keyboard.append([
             InlineKeyboardButton(
                 text="🔐 Закрытая группа по ИИ",
@@ -134,23 +129,21 @@ async def confirm_registration_handler(callback: CallbackQuery):
         await callback.message.answer_photo(image_url)
 
         # Отправляем текст сообщения
-        text = """🎉 <b>УРА! ТЫ НА ВЕБИНАРЕ!</b>
+        balance = await get_balance(callback.from_user.id)
+        text = f"""🎉 УРА! ТЫ В СПИСКЕ УЧАСТНИКОВ!
 
-Поздравляю! Ты только что сделал шаг, который изменит твой подход к работе навсегда.
+✅ Регистрация пройдена.
+💰 Твой баланс: {balance} AI-Coins (Ты сможешь обменять их на скидку или бонусы в конце вебинара).
 
-✅ <b>Ты зарегистрирован!</b>
+📲 Что дальше:
+Ссылку на вход я пришлю в этот бот:
+- в день эфира утром
+- за 1 час до старта.
 
-📲 <b>Что дальше:</b>
+🔥 А ТЕПЕРЬ - ГЛАВНЫЙ БОНУС!
+Я открыл тебе доступ в Закрытый канал, где уже лежит та самая полезная информация.
 
-→ За 1 час до вебинара - напомню здесь, в боте 
-
-→ Доступ в закрытую группу по ИИ - кнопка ниже
-
-🔥 <b>А пока можешь:</b>
-
-👇 Выбери что интересно:
-
-⚡ До встречи на вебинаре! Будет <b>ОГОНЬ!</b> 🔥"""
+👇 Вступай прямо сейчас, пока ссылка активна"""
 
         await callback.message.answer(
             text, reply_markup=keyboard, parse_mode="HTML"
