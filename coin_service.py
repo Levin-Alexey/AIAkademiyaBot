@@ -5,7 +5,7 @@
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from database import async_session
-from models import User, AICoinOperation, CoinOperationType
+from models import User, AICoinOperation
 
 
 async def add_coins(telegram_id: int, amount: int, reason: str, description: str = None) -> int:
@@ -40,7 +40,7 @@ async def add_coins(telegram_id: int, amount: int, reason: str, description: str
         coin_operation = AICoinOperation(
             user_id=user.id,
             amount=amount,
-            operation_type=CoinOperationType.EARNED,
+            operation_type='earned',
             reason=reason,
             description=description
         )
@@ -89,7 +89,7 @@ async def subtract_coins(telegram_id: int, amount: int, reason: str, description
         coin_operation = AICoinOperation(
             user_id=user.id,
             amount=-amount,
-            operation_type=CoinOperationType.SPENT,
+            operation_type='spent',
             reason=reason,
             description=description
         )
