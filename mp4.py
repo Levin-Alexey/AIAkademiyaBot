@@ -4,7 +4,7 @@ from aiogram import Bot
 from aiogram.types import FSInputFile
 
 # --- НАСТРОЙКИ ---
-BOT_TOKEN = "8390621078:AAH5M2JA5e7NwW_yj5u5G5RFQSVPGK-F47g" # Твой токен
+BOT_TOKEN = "" # Твой токен
 MY_CHAT_ID = 525944420  # Твой цифровой ID (можно узнать у @userinfobot)
 VIDEO_FILENAME = "video.mp4" # Имя твоего файла (должен лежать рядом)
 # -----------------
